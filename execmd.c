@@ -2,16 +2,22 @@
 
 void execmd(char **argv)
 {
-	char *command = NULL;
+	pid_t pid;
+	int status;
 
-	if (argv)
+	pid = fork();
+
+	if (pid < 0)
+		perror("");
+
+	if (pid == 0)
 	{
-		/*get the command*/
-		command = argv[0];
-
 		/*execute the command with execve*/
-		if (execve(command, argv, NULL) == -1)
+		if (execve(argv[0], argv, environ) == -1)
 			perror("Error:");
 	}
-
+	else
+	{
+		wait(&status);
+	}
 }

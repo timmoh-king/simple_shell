@@ -15,7 +15,7 @@ int main(int ac, char **argv)
 	char *lineptr = NULL, *lineptr_copy = NULL;
 	size_t n = 0;
 	ssize_t nchars_read;
-	const char *delim = "\n";
+	const char *delim = " \n";
 	int num_tokens = 0;
 	char *token;
 	int i;
@@ -32,8 +32,8 @@ int main(int ac, char **argv)
 		/*check if the getline function failed or reached EOF*/
 		if (nchars_read == -1)
 		{
-			printf("Exiting shell terminal\n");
-			return (-1);
+			printf("\n");
+			return (0);
 		}
 
 		/*allocate space for a copy of the lineptr*/
