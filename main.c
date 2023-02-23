@@ -1,5 +1,4 @@
-#include "emain.h"
-#include <unistd.h>
+#include "shell.h"
 
 /**
  * main - the main function
@@ -12,16 +11,13 @@
 int main(int ac, char **argv)
 {
 	char *prompt = "(cisfun) $ ";
-	char *lineptr = NULL, *lineptr_copy = NULL;
 	size_t n = 0;
 	ssize_t nchars_read;
-	const char *delim = " \n";
-	int num_tokens = 0;
-	char *token;
-	int i;
+	char **av, *lineptr = NULL;
 
 	/*declaring void variables*/
 	(void)ac;
+	(void)argv;
 
 	/*create an infinite loop*/
 	while (1)
@@ -33,51 +29,37 @@ int main(int ac, char **argv)
 		if (nchars_read == -1)
 		{
 			printf("\n");
+			free(lineptr);
 			return (0);
 		}
-
-		/*allocate space for a copy of the lineptr*/
-		lineptr_copy = malloc(sizeof(char) * nchars_read);
-		if (lineptr_copy == NULL)
-		{
-			perror("tsh: memory allocation error");
-			return (-1);
-		}
-
-		/*copy lineptr to lineptr_copy*/
-		strcpy(lineptr_copy, lineptr);
-
-		token = strtok(lineptr, delim);
-
-		/*determine how many tokens are there*/
-		while (token != NULL)
-		{
-			num_tokens++;
-			token = strtok(NULL, delim);
-		} num_tokens++;
-
-		/* Allocate space to hold the array of strings */
-		argv = malloc(sizeof(char *) * num_tokens);
-
-		/* Store each token in the argv array */
-		token = strtok(lineptr_copy, delim);
-
-		for (i = 0; token != NULL; i++)
-		{
-			argv[i] = malloc(sizeof(char) * strlen(token));
-			strcpy(argv[i], token);
-
-			token = strtok(NULL, delim);
-		}
-		argv[i] = NULL;
-
-		/*execute command*/
-		execmd(argv);
+		av = get_arguments(lineptr);
+		execmd(av);
 	}
 
-	/*free up allocated memory*/
-	free(lineptr);
-	free(lineptr_copy);
-
 	return (0);
+}
+/**
+ * get_arguments - get arguments passed on terminal
+ * @lineptr: pointer to the line args
+ *
+ * Return: array of strings
+ */
+char **get_arguments(char *lineptr)
+{
+	const char *delim = " \r\t\n";
+	char *token;
+	int i = 0;
+	char **argv = malloc(sizeof(char *) * 100);
+
+	token = strtok(lineptr, delim);
+	while (token)
+	{
+		argv[i] = token;
+		i++;
+
+		token = strtok(NULL, delim);
+	}
+	argv[i] = NULL;
+
+	return (argv);
 }

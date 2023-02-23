@@ -7,4 +7,11 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <sys/types.h>
+#include <sys/wait.h>
+
+int execmd(char **argv);
+extern char **environ;
+char **get_arguments(char *lineptr);
+
 #endif
