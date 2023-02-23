@@ -10,6 +10,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+char **error;
+
 int execmd(char **argv);
 extern char **environ;
 char **get_arguments(char *lineptr);
